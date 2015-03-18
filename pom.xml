@@ -1,4 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<<<<<<< HEAD
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.lendholt.geo.process</groupId>
@@ -47,4 +48,35 @@
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
+=======
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>de.lendholt.geo</groupId>
+  <artifactId>geocode</artifactId>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+  <name>GeoCodeApplicationProfile</name>
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+ 
+  <modules>
+    <module>geocode-xsd</module>
+  </modules>
+ 
+ <dependencyManagement>
+  <dependencies>
+   <dependency>
+      <groupId>org.apache.xmlbeans</groupId>
+      <artifactId>xmlbeans</artifactId>
+      <version>2.4.0</version>
+    </dependency>
+</dependencies>
+ </dependencyManagement> 
+  
+<build>
+	<finalName>GCAP-${project.version}</finalName>
+</build>
+>>>>>>> refs/remotes/githubmaster/master
 </project>

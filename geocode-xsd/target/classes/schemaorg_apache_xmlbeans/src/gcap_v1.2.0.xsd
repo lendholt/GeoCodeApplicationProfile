@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) 2012 German Research Centre for Geosciences GFZ,  mailto:matthias.lendholt@gmx.de -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gcap="http://lendholt.de/geo/wps/gcap/1.2" targetNamespace="http://lendholt.de/geo/wps/gcap/1.2" elementFormDefault="qualified" version="1.2.0">
+	<!--	<xs:import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/> -->
+	<!--
+	<xs:import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/geometryBasic0d1d.xsd"/>
+-->
+	<!-- =========================================================== -->
+	<!-- ============= complex types ================================== -->
+	<!-- =========================================================== -->
+	<xs:element name="basicEnvelope" type="gcap:basicEnvelopeType"/>
+	<!-- =========================================================== -->
+	<xs:complexType name="basicEnvelopeType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Simple representation of an envelope.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="lowerCornerLon" type="xs:double">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The longitude value (WGS84, EPSG4326) of the envelope's lower corner.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="lowerCornerLat" type="xs:double">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The latitude value (WGS84, EPSG4326) of the envelope's lower corner.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="upperCornerLon" type="xs:double">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The longitude value (WGS84, EPSG4326) of the envelope's upper corner.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="upperCornerLat" type="xs:double">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The latitude value (WGS84, EPSG4326) of the envelope's upper corner.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<!--
+		<xs:choice>
+			<xs:element ref="gml:Envelope"/>
+-->
+		<!--	</xs:choice> -->
+	</xs:complexType>
+	<!-- =========================================================== -->
+	<xs:element name="geocode" type="gcap:geocodeType"/>
+	<!-- =========================================================== -->
+	<xs:complexType name="geocodeType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">This element represents a geocde as key-value pair with key as geocode type and value as geocode.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gcap:keyValueType">
+				<xs:attribute name="level" type="gcap:geocodeLevelType" use="optional"/>
+			</xs:extension>
+			<!--
+				<xs:sequence>
+					<xs:group ref="gml:StandardObjectProperties"/>
+				</xs:sequence>
+-->
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- =========================================================== -->
+	<xs:element name="entity" type="gcap:entityType"/>
+	<!-- =========================================================== -->
+	<xs:complexType name="entityType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">This element serves as container for different geocodes addressing the same object / area.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<!--
+			<xs:group ref="gml:StandardObjectProperties"/>
+-->
+			<xs:element name="primaryGeocode" type="gcap:geocodeType" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Primary geocode standard. Optional: Must not be given if no other standard exists for this level.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="geocode" type="gcap:geocodeType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- =========================================================== -->
+	<xs:element name="entityWithChildren" type="gcap:entityWithChildrenType"/>
+	<!-- =========================================================== -->
+	<xs:complexType name="entityWithChildrenType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">This element serves as container for different geocodes addressing the same object / area.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gcap:entityType">
+				<xs:sequence>
+					<xs:element name="children">
+						<xs:complexType>
+							<xs:sequence minOccurs="0" maxOccurs="unbounded">
+								<xs:element name="child" type="gcap:entityWithChildrenType"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- =========================================================== -->
+	<xs:element name="entityList" type="gcap:entityListType"/>
+	<!-- =========================================================== -->
+	<xs:complexType name="entityListType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">This element represents a list of entities.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<!--
+			<xs:group ref="gml:StandardObjectProperties"/>
+-->
+			<xs:choice minOccurs="0">
+				<!--<xs:element name="geocode" type="gcap:geocodeType" maxOccurs="unbounded"/>-->
+				<xs:element name="entity" type="gcap:entityType" maxOccurs="unbounded"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- =========================================================== -->
+	<xs:element name="geometry" type="gcap:geometryType"/>
+	<!-- =========================================================== -->
+	<xs:complexType name="geometryType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">This element serves as container for geometry objects which can be given in one of the different formats.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<!--
+			<xs:group ref="gml:StandardObjectProperties"/>
+-->
+			<xs:choice minOccurs="0">
+				<!--	
+				<xs:element name="gml" type="gml:AbstractGeometryType"/>
+-->
+				<xs:element name="wkt" type="xs:string"/>
+				<xs:element name="hexewkb" type="xs:hexBinary"/>
+				<xs:element name="shapefile" type="xs:base64Binary"/>
+				<xs:element name="geojson" type="xs:string"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- =========================================================== -->
+	<xs:element name="hierarchy" type="gcap:hierarchyType"/>
+	<!-- =========================================================== -->
+	<xs:complexType name="hierarchyType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Representation of spatial hierarchy provided by SDI.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="hierarchyLevel" type="gcap:hierarchyLevelType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- =========================================================== -->
+	<xs:element name="hierarchyLevel" type="gcap:hierarchyLevelType"/>
+	<!-- =========================================================== -->
+	<xs:complexType name="hierarchyLevelType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Representation of spatial hierarchy level provided by SDI.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="realName" type="gcap:notEmptyNMTOKEN" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">An optional "real name" geocode addresing objects on this level.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="primaryGeocodeStandard" type="gcap:notEmptyNMTOKEN" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Primary geocode standard for this level. Optional: Must not be given if no other standard exists for this level.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="geocodeStandard" type="gcap:notEmptyNMTOKEN" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">All geocode standards provided for this level.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="level" type="gcap:geocodeLevelType" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	<!-- =========================================================== -->
+	<!-- ============= simple types ==================================== -->
+	<!-- =========================================================== -->
+	<xs:element name="geometryFormat" type="gcap:geometryFormatType"/>
+	<!-- =========================================================== -->
+	<xs:simpleType name="geometryFormatType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">This element defines the geometry format.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="gml"/>
+			<xs:enumeration value="wkt"/>
+			<xs:enumeration value="hexewkb"/>
+			<xs:enumeration value="shapefile"/>
+			<xs:enumeration value="geojson"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- =========================================================== -->
+	<xs:element name="de9im" type="gcap:de9imType"/>
+	<!-- =========================================================== -->
+	<xs:simpleType name="de9imType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">This element contains string representation of a Dimensionally Extended 9 Intersection Matrix (see http://docs.codehaus.org/display/GEOTDOC/Point+Set+Theory+and+the+DE-9IM+Matrix).</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[012TtFf\*]{6}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--
+	<xs:simpleType name="geocodeStandardType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">String representation of geocode standard identifier (e.g., "HASC_3", "SALB")</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="geocodeValueType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">String representation of a geocode (e.g., "TH.PU.KA")</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+-->
+	<!-- =========================================================== -->
+	<xs:element name="geocodeLevel" type="gcap:geocodeLevelType"/>
+	<!-- =========================================================== -->
+	<xs:simpleType name="geocodeLevelType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Hierarchy level representation.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:byte"/>
+	</xs:simpleType>
+	<!-- =========================================================== -->
+	<xs:element name="keyValue" type="gcap:keyValueType"/>
+	<!-- =========================================================== -->
+	<xs:complexType name="keyValueType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">This element represents a key value pair. Could be based on corresponding CAP type.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="key" type="gcap:notEmptyNMTOKEN"/>
+			<xs:element name="value" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- =========================================================== -->
+	<xs:element name="notEmptyNMTOKEN" type="gcap:notEmptyNMTOKEN"/>
+	<!-- =========================================================== -->
+	<xs:simpleType name="notEmptyNMTOKEN">
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
